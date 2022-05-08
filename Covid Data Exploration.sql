@@ -8,15 +8,18 @@ Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, 
 
 SELECT	location, date, total_cases, new_cases, total_deaths, population
 FROM	CovidDeaths
+WHERE continent is not null 
 ORDER BY 1, 2;
 
--- Looking at total cases vs total deaths
+
+-- Total Cases vs Total Deaths
 -- Shows the likelihood of dying if contract Covid
 
 SELECT	location, date, total_cases, total_deaths, 
 		(total_deaths/total_cases)*100 AS death_percentage
 FROM	CovidDeaths
 WHERE	location LIKE '%States%'
+AND 	continent IS NOT NULL
 ORDER BY 1, 2;
 
 
@@ -27,10 +30,11 @@ SELECT	location, date, total_cases, population,
 		(total_cases/population)*100 AS infection_rate
 FROM	CovidDeaths
 WHERE	location LIKE '%States%'
+AND 	continent IS NOT NULL
 ORDER BY 1, 2;
 
 
--- Countries with the highest infection rate
+-- Countries with the highest infection rate compared to Population
 
 SELECT	location, MAX(total_cases) AS highest_infection_count , population, 
 		(MAX(total_cases)/population)*100 AS infection_rate
@@ -39,7 +43,7 @@ GROUP BY location, population
 ORDER BY infection_rate DESC;
 
 
--- Countries with the highest death count
+-- Countries with the highest death count per population
 
 SELECT	location, MAX(total_deaths) AS total_death_count
 FROM	CovidDeaths
@@ -48,6 +52,7 @@ GROUP BY location
 ORDER BY total_death_count DESC;
 
 
+-- BREAKING THINGS DOWN BY CONTINENT
 -- DEATH COUNT BY CONTINENT
 
 SELECT	location, MAX(total_deaths) AS total_death_count
@@ -57,7 +62,7 @@ GROUP BY location
 ORDER BY total_death_count DESC;
 
 
--- GLOBAL NUMBER
+-- GLOBAL NUMBERS
 
 SELECT	date, SUM(new_cases) AS total_cases, 
 		SUM(new_deaths) AS total_deaths, 
@@ -69,7 +74,9 @@ ORDER BY 1;
 
 
 -- Total population vs Vaccination
--- Use CTE
+-- Shows Percentage of Population that has recieved at least one Covid Vaccine
+
+-- Use CTE to perform Calculation on Partition By
 
 WITH VacvsPop (Continent, Location, Date, Population, New_vaccinations, RollingVaccinated)
 AS(
@@ -88,7 +95,8 @@ FROM VacvsPop;
 
 
 
--- Use Temp Table
+-- Using Temp Table to perform Calculation on Partition By
+
 DROP TABLE IF EXISTS #PercentPopulationVaccinated
 CREATE TABLE #PercentPopulationVaccinated
 (
