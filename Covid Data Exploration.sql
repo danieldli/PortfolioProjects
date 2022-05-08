@@ -1,10 +1,10 @@
-SELECT 	* 
-FROM	CovidDeaths
-ORDER BY 3, 4;
+/*
+Covid 19 Data Exploration 
 
-SELECT	*
-FROM	CovidVaccinations
-ORDER BY 3, 4;
+Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
+*/
+
+-- Select Data that we are going to be starting with
 
 SELECT	location, date, total_cases, new_cases, total_deaths, population
 FROM	CovidDeaths
@@ -126,5 +126,3 @@ FROM    CovidDeaths dea JOIN CovidVaccinations vac ON  dea.location = vac.locati
                 AND dea.date = vac.date
 WHERE   dea.continent IS NOT NULL
 
--- View is permanent
-SELECT * FROM PercentPopulationVaccinated;
